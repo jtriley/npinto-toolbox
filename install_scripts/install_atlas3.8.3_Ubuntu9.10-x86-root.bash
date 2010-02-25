@@ -50,8 +50,8 @@ tar xzf lapack.tgz
 
 echo -e "[ ${RED} Configure lapack-3.2.1 ${NC} ]"
 cd lapack-3.2.1
-sed -e 's/^OPTS *=/OPTS\t= -O2/' \
-    -e 's/^NOOPT *=/NOOPT\t=-O0 /' \
+sed -e 's/^OPTS *=/OPTS\t= -O2 -fPIC -m32 -ffloat-store/' \
+    -e 's/^NOOPT *=/NOOPT\t=-O0 -fPIC -m32 -ffloat-store /' \
     make.inc.example > make.inc
 
 echo -e "[ ${RED} Build lapack-3.2.1 ${NC} ]"
@@ -68,12 +68,14 @@ tar xjf atlas3.8.3.tar.bz2
 # ------------------------------------------------------------------------------
 echo -e "[ ${RED} Configure atlas-3.8.3 ${NC} ]"
 cd ATLAS/
-mkdir -p Linux_X64SSE2 && cd Linux_X64SSE2
+mkdir -p Linux_X32SSE2 && cd Linux_X32SSE2
 # (try to) turn off cpu-throttling
 cpufreq-selector -g performance
 
-# if you don't want 64bit code remove the '-b 64' and '-fPIC' flags
+# if you don't want 32bit code remove the '-b 32' and '-fPIC' flags
 ../configure -b 32 -D c -DPentiumCPS=${CPUFREQ} \
+    -Fa alg -fPIC \
+    -Fa alg -ffloat-store \
     --with-netlib-lapack=${TMP_DIR}/lapack-3.2.1/lapack_LINUX.a
 
 echo -e "[ ${RED} Build atlas-3.8.3 ${NC} ]"
@@ -118,11 +120,11 @@ echo -e "You may want to clean up ${TMP_DIR}"
 # sudo apt-get install gfortran-4.2 -y
 # sudo ln -sf /usr/bin/gfortran{-4.2,} 
 
-# mkdir Linux_X64SSE2_gfortran-4.2
-# cd Linux_X64SSE2_gfortran-4.2
+# mkdir Linux_X32SSE2_gfortran-4.2
+# cd Linux_X32SSE2_gfortran-4.2
 
 # sudo cpufreq-selector -g performance
-# ../configure -b 64 -D c -DPentiumCPS=2666 -Fa alg -fPIC --with-netlib-lapack=$HOME/src/lapack-3.2.1/lapack_LINUX.a
+# ../configure -b 32 -D c -DPentiumCPS=2666 -Fa alg -fPIC --with-netlib-lapack=$HOME/src/lapack-3.2.1/lapack_LINUX.a
 
 # make build
 
