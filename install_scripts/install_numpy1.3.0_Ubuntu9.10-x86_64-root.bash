@@ -40,9 +40,7 @@ cd ${NUMPY}
 cp -vf site.cfg.example site.cfg
 
 cat << EOF >> site.cfg
-
 # numpy's configuration on thor nodes
-
 [DEFAULT]
 library_dirs = /usr/lib
 include_dirs = /usr/include
@@ -52,6 +50,15 @@ libraries = ptf77blas, ptcblas, atlas
 
 [lapack_opt]
 libraries = lapack, ptf77blas, ptcblas, atlas
+
+[amd]
+amd_libs = amd
+
+[umfpack]
+umfpack_libs = umfpack, gfortran
+
+[fftw]
+libraries = fftw3
 EOF
 
 echo -e "[ ${RED} Build ${NUMPY} ${NC} ]"
@@ -82,6 +89,9 @@ echo "DOTBLAS=$DOTBLAS"
 if [[ $VERSION != "1.3.0" || $DOTBLAS != "numpy.core._dotblas" ]] ; 
 then echo "ERROR! see $TMP_DIR"; exit 1; 
 fi;
+
+echo -e "[ ${RED} Running numpy.test(verbose=10) for ${NUMPY} () ${NC} ]"
+(cd $HOME && python -c "import numpy; numpy.test(verbose=10)") || exit 1
 
 echo -e "${NUMPY} has been successfuly installed!"
 
