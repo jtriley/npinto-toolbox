@@ -40,7 +40,6 @@ cd ${NUMPY}
 cp -vf site.cfg.example site.cfg
 
 cat << EOF >> site.cfg
-# numpy's configuration on thor nodes
 [DEFAULT]
 library_dirs = /usr/lib
 include_dirs = /usr/include
@@ -60,6 +59,11 @@ umfpack_libs = umfpack, gfortran
 [fftw]
 libraries = fftw3
 EOF
+
+echo -e "[ ${RED} Inspect config for errors ]"
+python setup.py config
+echo "Sleeping for 10 secs for inspection..."
+sleep 10
 
 echo -e "[ ${RED} Build ${NUMPY} ${NC} ]"
 python setup.py build

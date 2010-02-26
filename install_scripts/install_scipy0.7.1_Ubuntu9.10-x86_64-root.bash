@@ -43,6 +43,32 @@ then echo "Uninstalling $PREVIOUS_INSTALL";
 rm -rf $PREVIOUS_INSTALL;
 fi;
 
+cat << EOF >> site.cfg
+[DEFAULT]
+library_dirs = /usr/lib
+include_dirs = /usr/include
+
+[blas_opt]
+libraries = ptf77blas, ptcblas, atlas
+
+[lapack_opt]
+libraries = lapack, ptf77blas, ptcblas, atlas
+
+[amd]
+amd_libs = amd
+
+[umfpack]
+umfpack_libs = umfpack, gfortran
+
+[fftw]
+libraries = fftw3
+EOF
+
+echo -e "[ ${RED} Inspect config for errors ]"
+python setup.py config
+echo "Sleeping for 10 secs for inspection..."
+sleep 10
+
 echo -e "[ ${RED} Install ${NUMPY} ${NC} ]"
 python setup.py install
 
@@ -60,6 +86,9 @@ echo "DOTBLAS=$DOTBLAS"
 if [[ $VERSION != "0.7.1" || $DOTBLAS != "numpy.core._dotblas" ]] ; 
 then echo "ERROR! see $TMP_DIR"; exit 1; 
 fi;
+
+echo -e "[ ${RED} Running scipy.test(verbose=10) for ${SCIPY} () ${NC} ]"
+(cd $HOME && python -c "import scipy; scipy.test(verbose=10)") || exit 1
 
 echo -e "${SCIPY} has been successfuly installed!"
 
