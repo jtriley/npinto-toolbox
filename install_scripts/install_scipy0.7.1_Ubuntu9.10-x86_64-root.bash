@@ -31,17 +31,7 @@ test ! -f ${SCIPY}.tar.gz && \
     wget http://downloads.sourceforge.net/sourceforge/scipy/${SCIPY}.tar.gz
 tar xzf ${SCIPY}.tar.gz
 
-echo -e "[ ${RED} Build ${SCIPY} ${NC} ]"
 cd ${SCIPY}
-python setup.py build
-
-echo -e "[ ${RED} Remove previous installation ${NC} ]"
-export PREVIOUS_INSTALL=$(cd $HOME && \
-    python -c "import scipy; print scipy.__path__[0]" 2> /dev/null)
-if [ $PREVIOUS_INSTALL ]; 
-then echo "Uninstalling $PREVIOUS_INSTALL"; 
-rm -rf $PREVIOUS_INSTALL;
-fi;
 
 cat << EOF >> site.cfg
 [DEFAULT]
@@ -68,6 +58,18 @@ echo -e "[ ${RED} Inspect config for errors ]"
 python setup.py config
 echo "Sleeping for 10 secs for inspection..."
 sleep 10
+
+echo -e "[ ${RED} Build ${SCIPY} ${NC} ]"
+python setup.py build
+
+echo -e "[ ${RED} Remove previous installation ${NC} ]"
+export PREVIOUS_INSTALL=$(cd $HOME && \
+    python -c "import scipy; print scipy.__path__[0]" 2> /dev/null)
+if [ $PREVIOUS_INSTALL ]; 
+then echo "Uninstalling $PREVIOUS_INSTALL"; 
+rm -rf $PREVIOUS_INSTALL;
+fi;
+
 
 echo -e "[ ${RED} Install ${NUMPY} ${NC} ]"
 python setup.py install
