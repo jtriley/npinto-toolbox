@@ -56,7 +56,7 @@ EOF
 
 echo -e "[ ${RED} Inspect config for errors ]"
 python setup.py config
-echo "Sleeping for 10 secs for inspection..."
+echo "Sleeping 10 secs for inspection..."
 sleep 10
 
 echo -e "[ ${RED} Build ${SCIPY} ${NC} ]"
